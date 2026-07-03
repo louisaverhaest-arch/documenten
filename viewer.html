@@ -5,27 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Document bekijken</title>
   <style>
-    body { margin:0; font-family:Arial, Helvetica, sans-serif; background:#111827; color:white; }
-    .bar { height:62px; display:flex; align-items:center; gap:14px; padding:0 18px; background:#0b1220; border-bottom:1px solid rgba(255,255,255,.12); }
-    a { color:white; text-decoration:none; }
-    .back { padding:9px 12px; background:rgba(255,255,255,.1); border-radius:10px; }
-    .title { font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    iframe { width:100%; height:calc(100vh - 62px); border:0; background:white; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #fff;
+    }
+    iframe {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      border: 0;
+      background: #fff;
+    }
   </style>
 </head>
 <body>
-  <div class="bar">
-    <a class="back" href="index.html">← Terug</a>
-    <div id="title" class="title">Document</div>
-  </div>
-  <iframe id="frame"></iframe>
+  <iframe id="frame" title="Document"></iframe>
   <script>
     const p = new URLSearchParams(location.search);
     const file = p.get('file') || 'docs/gewestplan-legende.pdf';
     const title = p.get('title') || 'Document';
-    document.getElementById('title').textContent = title;
     document.title = title;
-    document.getElementById('frame').src = file;
+
+    // De parameters na # verbergen in de meeste browsers de PDF-werkbalk,
+    // paginabalk links, download/printknoppen en scrollbars.
+    const cleanFile = file.split('#')[0];
+    document.getElementById('frame').src = cleanFile + '#toolbar=0&navpanes=0&scrollbar=0&view=FitH';
   </script>
 </body>
 </html>
