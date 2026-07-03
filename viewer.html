@@ -3,17 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Document bekijken</title>
+  <title>Document</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #fff;
+      min-height: 100%;
+      background: #ffffff;
     }
-    iframe {
+    body {
+      overflow: auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    img.document-page {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 1600px;
+      margin: 0 auto;
+      border: 0;
+    }
+    iframe.fallback {
       display: block;
       width: 100vw;
       height: 100vh;
@@ -23,17 +36,26 @@
   </style>
 </head>
 <body>
-  <iframe id="frame" title="Document"></iframe>
+  <img id="page" class="document-page" alt="Document">
   <script>
     const p = new URLSearchParams(location.search);
     const file = p.get('file') || 'docs/gewestplan-legende.pdf';
     const title = p.get('title') || 'Document';
     document.title = title;
 
-    // De parameters na # verbergen in de meeste browsers de PDF-werkbalk,
-    // paginabalk links, download/printknoppen en scrollbars.
     const cleanFile = file.split('#')[0];
-    document.getElementById('frame').src = cleanFile + '#toolbar=0&navpanes=0&scrollbar=0&view=FitH';
+    const imageFile = cleanFile.replace(/\.pdf$/i, '.png');
+    const img = document.getElementById('page');
+
+    img.src = imageFile;
+    img.onerror = function () {
+      const iframe = document.createElement('iframe');
+      iframe.className = 'fallback';
+      iframe.title = title;
+      iframe.src = cleanFile + '#toolbar=0&navpanes=0&scrollbar=0&view=FitH';
+      document.body.innerHTML = '';
+      document.body.appendChild(iframe);
+    };
   </script>
 </body>
 </html>
